@@ -1,6 +1,12 @@
 #include "MySearchTree.h"
 
-MySearchTree::MySearchTree() :m_root(NULL), m_nil(NULL), m_numNodes(0){}
+MySearchTree::MySearchTree( MyTreeNode* nil ) 
+        : m_root(nil), m_nil(nil), m_numNodes(0){
+    if (m_nil) {
+        m_nil->p = m_nil->left = m_nil->right = m_nil;    	
+    }
+}
+
 
 MySearchTree::~MySearchTree() {
     if (m_root) {
@@ -10,12 +16,12 @@ MySearchTree::~MySearchTree() {
 
 void MySearchTree::walk(order_t order) {
     switch(order) {
-    case PRE:
+    case PreOrder:
         break;
-    case IN:
+    case InOrder:
         inWalk(m_root);
         break;
-    case POST:
+    case PostOrder:
         break;
     default:
         break;
@@ -108,7 +114,6 @@ MyTreeNode* MySearchTree::insert( MyTreeNode* z ) {
     m_numNodes++;
 
     return z;
-
 }
 
 // 不考虑x异常情况
@@ -148,4 +153,40 @@ MyTreeNode* MySearchTree::del( MyTreeNode* x ){
 
 int MySearchTree::size(){
     return m_numNodes;
+}
+
+void MySearchTree::leftRotate( MyTreeNode* x ){
+    MyTreeNode* y = x->right;
+    x->right = y->left;
+    if (x->right != m_nil) {
+        x->right->p = x;
+    }
+    y->p = x->p;
+    if (x == m_root) {
+        m_root = y;
+    } else if (x == x->p->left) {
+        x->p->left = y;
+    } else {
+        x->p->right = y;
+    }
+    y->left = x;
+    x->p = y;
+}
+
+void MySearchTree::rightRotate( MyTreeNode* x ){
+    MyTreeNode* y = x->left;
+    x->left = y->right;
+    if (x->left != m_nil) {
+        x->left->p = x;
+    }
+    y->p = x->p;
+    if (x == m_root) {
+        m_root = y;
+    } else if (x == x->p->left) {
+        x->p->left = y;
+    } else {
+        x->p->right = y;
+    }
+    y->right = x;
+    x->p = y;
 }
